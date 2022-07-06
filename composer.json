@@ -1,0 +1,7 @@
+{
+  "name": "modernadventure/cmb2-field-ajax-search",
+  "type": "wordpress-plugin",
+  "suggest": {
+    "composer/installers": "~1.0"
+  }
+}
