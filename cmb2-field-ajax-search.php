@@ -76,9 +76,6 @@ if( ! class_exists( 'CMB2_Field_Ajax_Search' ) ) {
                 $value = explode(', ', $value);
             }
 
-			if( $field->args( 'multiple-item' ) == true ) {
-                $default_limit = -1; // 0 or -1 means unlimited
-
 				?><ul id="<?php echo $field_name; ?>_results" class="cmb-ajax-search-results cmb-<?php echo $object_to_search; ?>-ajax-search-results"><?php
 
 				if( isset( $value ) && ! empty( $value ) ){
@@ -103,20 +100,6 @@ if( ! class_exists( 'CMB2_Field_Ajax_Search' ) ) {
                 ?></ul><?php
 
 				$input_value = '';
-			} else {
-				if( is_array( $value ) ) {
-					$value = $value[0];
-				}
-
-				echo $field_type->input( array(
-					'type' 	=> 'hidden',
-					'name' 	=> $field->_name(),
-					'value' => $value,
-					'desc'	=> false
-				) );
-
-				$input_value = ( $value ? $this->object_text( $field_name, $value, $object_to_search ) : '' );
-			}
 
 			echo $field_type->input( array(
 				'type' 				=> 'text',
@@ -125,7 +108,6 @@ if( ! class_exists( 'CMB2_Field_Ajax_Search' ) ) {
 				'class'				=> 'cmb-ajax-search cmb-' . $object_to_search . '-ajax-search',
 				'value' 			=> $input_value,
 				'desc'				=> false,
-				'data-multiple'		=> $field->args( 'multiple-item' ) ? $field->args( 'multiple-item' ) : '0',
 				'data-limit'		=> $field->args( 'limit' ) ? $field->args( 'limit' ) : $default_limit,
 				'data-sortable'		=> $field->args( 'sortable' ) ? $field->args( 'sortable' ) : '0',
 				'data-object-type'	=> $object_to_search,

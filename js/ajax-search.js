@@ -51,13 +51,10 @@
 					$(this).devbridgeAutocomplete('clearCache');
 
 					var field_name  = $(this).attr('name');
-					var multiple 	= $(this).attr('data-multiple');
 					var limit 	    = parseInt( $(this).attr('data-limit') );
 					var sortable    = $(this).attr('data-sortable');
                     var field_name_temp = field_name.substring(1).replace( /[\[\]']+/g, '_' );
 
-					if( multiple == 1 ) {
-						// Multiple
 						$('#' + field_name_temp + '_results' ).append( '<li>' +
 							( ( sortable == 1 ) ? '<span class="hndl"></span>' : '' ) +
 							'<input type="hidden" name="' + field_name.substring(1) + '[]" value="' + suggestion.id + '">' +
@@ -73,11 +70,6 @@
 						} else {
 							$(this).focus();
 						}
-					} else {
-						// Singular
-                        $('input[name="' + field_name.substring(1) + '"]').val( suggestion.id );
-						$('input[name="' + field_name + '"]').val( suggestion.value ).focus();
-					}
 				}
 			},
 			cmb_ajax_search.options));
