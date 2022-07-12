@@ -1,4 +1,17 @@
 (function(document, $) {
+
+    // Helper function to check if field limit has been reached
+    function limit_check(element) {
+        const field_name      = element.attr('name');
+        const limit           = parseInt(element.attr('data-limit'));
+        const field_name_temp = field_name.substring(1).replace(/[\[\]']+/g, '_');
+        if (limit > 0 && limit === $('#' + field_name_temp + '_results li').length) {
+            element.attr('disabled', 'disabled');
+            return true;
+        }
+        return false;
+    };
+
     function init_ajax_search() {
         $('.cmb-ajax-search:not([data-ajax-search="true"])').each(function() {
             $(this).attr('data-ajax-search', true);
@@ -66,10 +79,11 @@
 
                         $(this).val('');
 
-                        // Checks if there is the max allowed results, limit < 0 means unlimited
-                        if (limit > 0 && limit == $('#' + field_name_temp + '_results li').length) {
-                            $(this).attr('disabled', 'disabled');
-                        } else {
+                        /**
+                         * If limit has been reached, disable the input.
+                         * Otherwise retain input focus.
+                         */
+                        if (!limit_check($(this))) {
                             $(this).focus();
                         }
                     }
@@ -85,6 +99,11 @@
             }
         });
     }
+
+    // Disable inputs whose limit has been reached
+    $('.cmb-ajax-search').each(function() {
+        limit_check($(this));
+    });
 
     // Initialize ajax search
     init_ajax_search();
