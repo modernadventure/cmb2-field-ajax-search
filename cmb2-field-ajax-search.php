@@ -75,10 +75,10 @@ if ( ! class_exists( 'CMB2_Field_Ajax_Search' ) ) {
 			if ( ! is_array( $value ) && strpos( $value, ', ' ) ) {
 				$value = explode( ', ', $value );
 			}
+			?>
 
-			?><ul id="<?php echo $field_name; ?>_results" class="cmb-ajax-search-results cmb-<?php echo $object_to_search; ?>-ajax-search-results">
+			<ul id="<?php echo $field_name; ?>_results" class="cmb-ajax-search-results cmb-<?php echo $object_to_search; ?>-ajax-search-results">
 				<?php
-
 				if ( isset( $value ) && ! empty( $value ) ) {
 					if ( ! is_array( $value ) ) {
 						$value = array( $value );
@@ -87,45 +87,45 @@ if ( ! class_exists( 'CMB2_Field_Ajax_Search' ) ) {
 					foreach ( $value as $val ) :
 						?>
 						<li>
-							<?php
-							if ( $field->args( 'sortable' ) ) :
-								?>
-								<span class="hndl"></span><?php endif; ?>
+							<?php if ( $field->args( 'sortable' ) ) : ?>
+							<span class="hndl"></span>
+							<?php endif; ?>
 							<input type="hidden" name="<?php echo $field->_name(); ?>[]" value="<?php echo $val; ?>">
 							<a href="<?php echo $this->object_link( $field->_name(), $val, $object_to_search ); ?>" target="_blank" class="edit-link">
-						<?php echo $this->object_text( $field->_name(), $val, $object_to_search ); ?>
+							    <?php echo $this->object_text( $field->_name(), $val, $object_to_search ); ?>
 							</a>
-							<a class="remover"><span class="dashicons dashicons-no"></span><span class="dashicons dashicons-dismiss"></span></a>
+							<a class="remover">
+							    <span class="dashicons dashicons-no"></span>
+							    <span class="dashicons dashicons-dismiss"></span>
+							</a>
 						</li>
 						<?php
-									endforeach;
+					endforeach;
 				}
-
 				?>
-				</ul>
-				<?php
+			</ul>
 
-				$input_value = '';
+			<?php
+			$input_value = '';
 
-				echo $field_type->input(
-					array(
-						'type'             => 'text',
-						'name'             => '_' . $field->_name(),
-						'id'               => $field_name,
-						'class'            => 'cmb-ajax-search cmb-' . $object_to_search . '-ajax-search',
-						'value'            => $input_value,
-						'desc'             => false,
-						'data-limit'       => $field->args( 'limit' ) ? $field->args( 'limit' ) : $default_limit,
-						'data-sortable'    => $field->args( 'sortable' ) ? $field->args( 'sortable' ) : '0',
-						'data-object-type' => $object_to_search,
-						'data-query-args'  => $field->args( 'query_args' ) ? htmlspecialchars( json_encode( $field->args( 'query_args' ) ), ENT_QUOTES, 'UTF-8' ) : '',
-					)
-				);
+			echo $field_type->input(
+				array(
+					'type'             => 'text',
+					'name'             => '_' . $field->_name(),
+					'id'               => $field_name,
+					'class'            => 'cmb-ajax-search cmb-' . $object_to_search . '-ajax-search',
+					'value'            => $input_value,
+					'desc'             => false,
+					'data-limit'       => $field->args( 'limit' ) ? $field->args( 'limit' ) : $default_limit,
+					'data-sortable'    => $field->args( 'sortable' ) ? $field->args( 'sortable' ) : '0',
+					'data-object-type' => $object_to_search,
+					'data-query-args'  => $field->args( 'query_args' ) ? htmlspecialchars( json_encode( $field->args( 'query_args' ) ), ENT_QUOTES, 'UTF-8' ) : '',
+				)
+			);
 
-				echo '<img src="' . admin_url( 'images/spinner.gif' ) . '" class="cmb-ajax-search-spinner" />';
+			echo '<img src="' . admin_url( 'images/spinner.gif' ) . '" class="cmb-ajax-search-spinner" />';
 
-				$field_type->_desc( true, true );
-
+			$field_type->_desc( true, true );
 		}
 
 		/**
