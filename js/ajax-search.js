@@ -70,21 +70,27 @@
                         var sortable = $(this).attr('data-sortable');
                         var field_name_temp = field_name.substring(1).replace(/[\[\]']+/g, '_');
 
-                        $('#' + field_name_temp + '_results').append('<li>' +
-                            ((sortable == 1) ? '<span class="hndl"></span>' : '') +
-                            '<input type="hidden" name="' + field_name.substring(1) + '[]" value="' + suggestion.id + '">' +
-                            '<a href="' + suggestion.link + '" target="_blank" class="edit-link">' + suggestion.value + '</a>' +
-                            '<a class="remover"><span class="dashicons dashicons-no"></span><span class="dashicons dashicons-dismiss"></span></a>' +
-                            '</li>');
+                        if (limit > 1) {
+                            $('#' + field_name_temp + '_results').append('<li>' +
+                                ((sortable == 1) ? '<span class="hndl"></span>' : '') +
+                                '<input type="hidden" name="' + field_name.substring(1) + '[]" value="' + suggestion.id + '">' +
+                                '<a href="' + suggestion.link + '" target="_blank" class="edit-link">' + suggestion.value + '</a>' +
+                                '<a class="remover"><span class="dashicons dashicons-no"></span><span class="dashicons dashicons-dismiss"></span></a>' +
+                                '</li>');
 
-                        $(this).val('');
+                            $(this).val('');
 
-                        /**
-                         * If limit has been reached, disable the input.
-                         * Otherwise retain input focus.
-                         */
-                        if (!limit_check($(this))) {
-                            $(this).focus();
+                            /**
+                             * If limit has been reached, disable the input.
+                             * Otherwise retain input focus.
+                             */
+                            if (!limit_check($(this))) {
+                                $(this).focus();
+                            }
+                        } else {
+                            // Singular
+                            $('input[name="' + field_name.substring(1) + '"]').val( suggestion.id );
+                            $('input[name="' + field_name + '"]').val( suggestion.value ).focus();
                         }
                     }
                 },

@@ -67,7 +67,6 @@ if ( ! class_exists( 'CMB2_Field_Ajax_Search' ) ) {
 		 */
 		public function render( $field, $value, $object_id, $object_type, $field_type ) {
 			$field_name    = $this->convert_as_id_css( $field->_name() );
-			$default_limit = 1;
 
 			// Current filter is cmb2_render_{$object_to_search}_ajax_search ( post, user or term )
 			$object_to_search = str_replace( 'cmb2_render_', '', str_replace( '_ajax_search', '', current_filter() ) );
@@ -75,38 +74,58 @@ if ( ! class_exists( 'CMB2_Field_Ajax_Search' ) ) {
 			if ( ! is_array( $value ) && strpos( $value, ', ' ) ) {
 				$value = explode( ', ', $value );
 			}
+
+			// If no limit is set, default to 1 entry only
+			$limit = $field->args( 'limit' ) ?: 1;
+
+			if ( $limit > 1 ) {
 			?>
 
-			<ul id="<?php echo $field_name; ?>_results" class="cmb-ajax-search-results cmb-<?php echo $object_to_search; ?>-ajax-search-results">
-				<?php
-				if ( isset( $value ) && ! empty( $value ) ) {
-					if ( ! is_array( $value ) ) {
-						$value = array( $value );
-					}
+			    <ul id="<?php echo $field_name; ?>_results" class="cmb-ajax-search-results cmb-<?php echo $object_to_search; ?>-ajax-search-results">
+				    <?php
+				    if ( isset( $value ) && ! empty( $value ) ) {
+					    if ( ! is_array( $value ) ) {
+						    $value = array( $value );
+					    }
 
-					foreach ( $value as $val ) :
-						?>
-						<li>
-							<?php if ( $field->args( 'sortable' ) ) : ?>
-							<span class="hndl"></span>
-							<?php endif; ?>
-							<input type="hidden" name="<?php echo $field->_name(); ?>[]" value="<?php echo $val; ?>">
-							<a href="<?php echo $this->object_link( $field->_name(), $val, $object_to_search ); ?>" target="_blank" class="edit-link">
-							    <?php echo $this->object_text( $field->_name(), $val, $object_to_search ); ?>
-							</a>
-							<a class="remover">
-							    <span class="dashicons dashicons-no"></span>
-							    <span class="dashicons dashicons-dismiss"></span>
-							</a>
-						</li>
-						<?php
-					endforeach;
-				}
-				?>
-			</ul>
+					    foreach ( $value as $val ) :
+						    ?>
+						    <li>
+							    <?php if ( $field->args( 'sortable' ) ) : ?>
+							    <span class="hndl"></span>
+							    <?php endif; ?>
+							    <input type="hidden" name="<?php echo $field->_name(); ?>[]" value="<?php echo $val; ?>">
+							    <a href="<?php echo $this->object_link( $field->_name(), $val, $object_to_search ); ?>" target="_blank" class="edit-link">
+								<?php echo $this->object_text( $field->_name(), $val, $object_to_search ); ?>
+							    </a>
+							    <a class="remover">
+								<span class="dashicons dashicons-no"></span>
+								<span class="dashicons dashicons-dismiss"></span>
+							    </a>
+						    </li>
+						    <?php
+					    endforeach;
+				    }
+				    ?>
+			    </ul>
 
-			<?php
-			$input_value = '';
+			    <?php
+			    $input_value = '';
+
+			} else { // Limit = 1
+			    if ( is_array( $value ) ) {
+				$value = $value[0];
+			    }
+
+			    echo $field_type->input( array(
+				    'type'  => 'hidden',
+				    'name'  => $field->_name(),
+				    'value' => $value,
+				    'desc'  => false
+			    ) );
+
+			    $input_value = ( $value ? $this->object_text( $field_name, $value, $object_to_search ) : '' );
+			}
 
 			echo $field_type->input(
 				array(
@@ -116,8 +135,8 @@ if ( ! class_exists( 'CMB2_Field_Ajax_Search' ) ) {
 					'class'            => 'cmb-ajax-search cmb-' . $object_to_search . '-ajax-search',
 					'value'            => $input_value,
 					'desc'             => false,
-					'data-limit'       => $field->args( 'limit' ) ? $field->args( 'limit' ) : $default_limit,
-					'data-sortable'    => $field->args( 'sortable' ) ? $field->args( 'sortable' ) : '0',
+					'data-limit'       => $limit,
+					'data-sortable'    => $field->args( 'sortable' ) ?: '0',
 					'data-object-type' => $object_to_search,
 					'data-query-args'  => $field->args( 'query_args' ) ? htmlspecialchars( json_encode( $field->args( 'query_args' ) ), ENT_QUOTES, 'UTF-8' ) : '',
 				)
